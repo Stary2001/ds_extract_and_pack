@@ -11,7 +11,7 @@ class TPFFile(lib.BinaryFile):
             ('signature', self.expect(self.MAGIC_HEADER)),
             ("size_sum", self.read(4)),
             ("record_count", self.read(4)),
-            ("flags", self.expect(0x20300, 4)),
+            ("flags", self.expect(0x20304, 4)),
         ])
         manifest.records = []
 

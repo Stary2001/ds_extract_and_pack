@@ -15,6 +15,7 @@ class BHD5File(lib.BinaryFile):
             ("file_size", self.read(4)),
             ("bin_count", self.read(4)),
             ("bin_record_offset", self.read(4)),
+            ("padding", self.read(8))
         ])
         manifest.records = []
         manifest.bin_records = []
@@ -35,7 +36,9 @@ class BHD5File(lib.BinaryFile):
     def _read_bin(self, depth):
         bin_record = lib.Manifest(self, header=[
             ("record_count", self.read(4)),
+			("padding", self.read(4)),
             ("offset", self.read(4)),
+			("padding2", self.read(4))
         ])
         bin_record.records = []
 
@@ -59,7 +62,8 @@ class BHD5File(lib.BinaryFile):
         try:
             record.record_name = lib.filesystem.get_name_from_hash(record_hash).lstrip("/").replace("/", os.sep)
         except KeyError:
-            raise ValueError("Failed to find {} in name hash dict".format(record_hash))
+            #raise ValueError("Failed to find {} in name hash dict".format(record_hash))
+            record.record_name = "unknown_{}.bin".format(record_hash)
 
         record.path = lib.filesystem.normalize_filepath(record.record_name, self.path)
 

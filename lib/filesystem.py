@@ -113,7 +113,8 @@ def compare_data(file_path, first, second):
     self_digest = hashlib.md5(first).hexdigest()
     other_digest = hashlib.md5(second).hexdigest()
     if self_digest != other_digest:
-        raise ValueError("ERROR: File already exists and has different hash: {}".format(file_path))
+        print("Dupe for", file_path)
+        #raise ValueError("ERROR: File already exists and has different hash: {}".format(file_path))
 
 
 def find_bdt_header_filename(path, depth):

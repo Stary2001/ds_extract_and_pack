@@ -19,7 +19,7 @@ class BND3File(lib.BinaryFile):
         ])
         manifest.records = []
 
-        if manifest.int32('flags') not in (0x74, 0x54, 0x70):
+        if manifest.int32('flags') not in (0x74, 0x54, 0x5c, 0x70, 0x7c, 0x78):
             raise ValueError("Invalid flags: {:02X}".format(manifest.int32('flags')))
 
         for i in range(manifest.int32('record_count')):
@@ -32,14 +32,15 @@ class BND3File(lib.BinaryFile):
 
     def _read_record(self, flags, depth):
         record = lib.Manifest(self, header=[
-            ("record_sep", self.expect(0x40, 4)),
+            ("record_sep", self.read(4)),
             ('data_size', self.read(4)),
             ('data_offset', self.read(4)),
             ('id', self.read(4)),
+            ('hmmm', self.read(4)),
             ("filename_offset", self.read(4)),
         ])
 
-        if flags in (0x74, 0x54):
+        if flags != 0x78:
             record.header['redundant_size'] = self.read(4)
             if record.header['redundant_size'] != record.header['data_size']:
                 raise ValueError("Expected size {}, got {}".format(
